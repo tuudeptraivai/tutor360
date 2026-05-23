@@ -1,4 +1,4 @@
-# Tutor365 API (`apps/api`)
+# Tutor365 API (`backend/apps/api`)
 
 Backend NestJS 10 cho Tutor365. Phase này là **scaffold**: cấu trúc thư mục + 14 module domain rỗng + stack base. Chưa có business logic, Prisma schema hay auth.
 
@@ -48,7 +48,8 @@ src/
 ### macOS (zsh/bash)
 
 ```bash
-# từ root repo
+# từ thư mục backend/
+cd backend
 pnpm install
 cp apps/api/.env.example apps/api/.env
 pnpm --filter api start:dev
@@ -57,7 +58,8 @@ pnpm --filter api start:dev
 ### Windows (PowerShell)
 
 ```powershell
-# từ root repo
+# từ thư mục backend\
+cd backend
 pnpm install
 Copy-Item apps\api\.env.example apps\api\.env
 pnpm --filter api start:dev

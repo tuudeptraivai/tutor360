@@ -67,11 +67,12 @@ tutor360/
 ├── AGENTS.md              # Quy tắc làm việc bắt buộc cho AI agents
 ├── CLAUDE.MD              # Trỏ tới AGENTS.md
 ├── README.md              # File này
-├── package.json           # Root workspace (pnpm)
-├── pnpm-workspace.yaml     # Khai báo workspace apps/*
-├── tsconfig.base.json      # TS config dùng chung
-├── apps/
-│   └── api/               # Backend NestJS (Tutor365 API) — xem apps/api/README.md
+├── backend/               # NestJS workspace (Tutor365 API)
+│   ├── package.json       # Root workspace (pnpm)
+│   ├── pnpm-workspace.yaml # Khai báo workspace apps/*
+│   ├── tsconfig.base.json  # TS config dùng chung cho backend
+│   └── apps/
+│       └── api/           # Backend NestJS — xem backend/apps/api/README.md
 └── docs/                  # Tài liệu khóa học (tiếng Việt)
     ├── course1/           # K1 — TypeScript + NodeJS Foundations
     │   ├── khoa-hoc-1-vi.md
@@ -88,7 +89,7 @@ tutor360/
         └── ui-screens.md
 ```
 
-> `apps/api` đã được scaffold (Issue #3 — Video 01). `apps/web`, `packages/*` sẽ được tạo ở các khóa sau.
+> `backend/apps/api` đã được scaffold (Issue #3 — Video 01). `backend/apps/web`, `backend/packages/*` sẽ được tạo ở các khóa sau.
 
 ---
 
@@ -125,7 +126,7 @@ npm install -g pnpm@9
 
 # Clone repo
 git clone https://github.com/tuudeptraivai/tutor360.git
-cd tutor360
+cd tutor360/backend
 
 # Cài dependencies
 pnpm install
@@ -149,7 +150,7 @@ npm install -g pnpm@9
 
 # Clone repo
 git clone https://github.com/tuudeptraivai/tutor360.git
-cd tutor360
+cd tutor360\backend
 
 # Cài dependencies
 pnpm install
@@ -166,7 +167,7 @@ Sau khi server chạy:
 - Swagger UI: <http://localhost:3000/api/docs>
 - Health check: <http://localhost:3000/v1/health> → `{ "status": "ok" }`
 
-> Chi tiết backend xem [`apps/api/README.md`](./apps/api/README.md).
+> Chi tiết backend xem [`backend/apps/api/README.md`](./backend/apps/api/README.md).
 
 ---
 
