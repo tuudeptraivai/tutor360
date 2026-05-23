@@ -21,7 +21,7 @@ pnpm-debug.log*
 coverage/
 
 # Prisma generated client
-apps/api/src/prisma/generated/
+backend/apps/api/src/prisma/generated/
 
 # OS / editor
 .DS_Store
