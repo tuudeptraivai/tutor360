@@ -1,0 +1,18 @@
+{
+  "name": "tutor365",
+  "version": "0.0.1",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm --filter api build",
+    "start:dev": "pnpm --filter api start:dev",
+    "test": "pnpm --filter api test"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "typescript": "^5.4.5"
+  }
+}

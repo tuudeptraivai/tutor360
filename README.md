@@ -67,6 +67,11 @@ tutor360/
 ├── AGENTS.md              # Quy tắc làm việc bắt buộc cho AI agents
 ├── CLAUDE.MD              # Trỏ tới AGENTS.md
 ├── README.md              # File này
+├── package.json           # Root workspace (pnpm)
+├── pnpm-workspace.yaml     # Khai báo workspace apps/*
+├── tsconfig.base.json      # TS config dùng chung
+├── apps/
+│   └── api/               # Backend NestJS (Tutor365 API) — xem apps/api/README.md
 └── docs/                  # Tài liệu khóa học (tiếng Việt)
     ├── course1/           # K1 — TypeScript + NodeJS Foundations
     │   ├── khoa-hoc-1-vi.md
@@ -83,7 +88,7 @@ tutor360/
         └── ui-screens.md
 ```
 
-> Code thực tế của `apps/api`, `apps/web`, `packages/*` sẽ được tạo trong quá trình triển khai từng khóa.
+> `apps/api` đã được scaffold (Issue #3 — Video 01). `apps/web`, `packages/*` sẽ được tạo ở các khóa sau.
 
 ---
 
@@ -109,7 +114,7 @@ tutor360/
 
 ## Bắt đầu
 
-> Hướng dẫn dưới đây áp dụng khi monorepo code đã được scaffold (từ Course 1 trở đi).
+### macOS (zsh/bash + nvm)
 
 ```bash
 # Cài Node 20 LTS
@@ -122,18 +127,46 @@ npm install -g pnpm@9
 git clone https://github.com/tuudeptraivai/tutor360.git
 cd tutor360
 
-# Cài dependencies (sau khi có package.json)
+# Cài dependencies
 pnpm install
 
-# Copy biến môi trường
-cp .env.example .env
+# Copy biến môi trường cho backend
+cp apps/api/.env.example apps/api/.env
 
-# Chạy verify (lint + typecheck + test + build)
-pnpm verify
-
-# Chạy dev server
-pnpm dev
+# Chạy backend dev server (port 3000)
+pnpm --filter api start:dev
 ```
+
+### Windows (PowerShell + nvm-windows)
+
+```powershell
+# Cài Node 20 LTS
+nvm install 20
+nvm use 20
+
+# Cài pnpm
+npm install -g pnpm@9
+
+# Clone repo
+git clone https://github.com/tuudeptraivai/tutor360.git
+cd tutor360
+
+# Cài dependencies
+pnpm install
+
+# Copy biến môi trường cho backend
+Copy-Item apps\api\.env.example apps\api\.env
+
+# Chạy backend dev server (port 3000)
+pnpm --filter api start:dev
+```
+
+Sau khi server chạy:
+
+- Swagger UI: <http://localhost:3000/api/docs>
+- Health check: <http://localhost:3000/v1/health> → `{ "status": "ok" }`
+
+> Chi tiết backend xem [`apps/api/README.md`](./apps/api/README.md).
 
 ---
 
