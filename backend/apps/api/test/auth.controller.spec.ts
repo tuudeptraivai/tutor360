@@ -46,7 +46,6 @@ describe('AuthController (integration)', () => {
     email: 'tu@example.com',
     password: 'Pass1234',
     fullName: 'Tu Nguyen',
-    role: 'student',
   };
 
   it('POST /v1/auth/signup with a valid body returns 201 and a generic message', async () => {
@@ -63,7 +62,17 @@ describe('AuthController (integration)', () => {
   it('POST /v1/auth/signup missing password returns 400 VALIDATION_ERROR', async () => {
     const res = await request(app.getHttpServer())
       .post('/v1/auth/signup')
-      .send({ email: 'a@b.com', fullName: 'Ab', role: 'student' })
+      .send({ email: 'a@b.com', fullName: 'Ab' })
+      .expect(400);
+
+    expect(res.body.ok).toBe(false);
+    expect(res.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('POST /v1/auth/signup with a role field is rejected (strict DTO)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/auth/signup')
+      .send({ ...validBody, email: 'role-attack@example.com', role: 'admin' })
       .expect(400);
 
     expect(res.body.ok).toBe(false);

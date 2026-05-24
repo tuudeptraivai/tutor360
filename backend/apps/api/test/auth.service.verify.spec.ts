@@ -26,7 +26,7 @@ function makeCtx() {
   const sendMail = vi.fn().mockResolvedValue({});
   const transporter = { sendMail } as unknown as Transporter;
   const usersRepo = new InMemoryUsersRepository();
-  const users = new UsersService(usersRepo);
+  const users = new UsersService(usersRepo, fakeConfig);
   const mail = new MailService(transporter, fakeConfig);
   const service = new AuthService(
     users,
@@ -41,7 +41,6 @@ const validInput = {
   email: 'tu@x.com',
   password: 'Pass1234',
   fullName: 'Tu Nguyen',
-  role: 'student' as const,
   country: 'VN',
 };
 

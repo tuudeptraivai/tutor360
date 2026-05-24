@@ -45,7 +45,7 @@ export class AuthService {
     const user = await this.users.create({
       email: input.email,
       passwordHash,
-      role: input.role,
+      role: 'user',
       fullName: input.fullName,
       phone: input.phone ?? null,
       country: input.country,
