@@ -1,0 +1,11 @@
+// Minimal Prisma schema for V02 skeleton.
+// Chỉ chứa generator + datasource để PrismaService (Slide 9) compile và
+// chạy `SELECT 1` ở /health. Các model domain sẽ được bổ sung ở issue Prisma schema.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
