@@ -87,7 +87,7 @@ describe('AuthController (integration)', () => {
 
     const second = await request(app.getHttpServer())
       .post('/v1/auth/signup')
-      .send({ ...validBody, email: 'dup@example.com', fullName: 'X' })
+      .send({ ...validBody, email: 'dup@example.com', fullName: 'XY' })
       .expect(201);
 
     expect(second.body.data.message).toBe(first.body.data.message);
