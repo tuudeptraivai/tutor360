@@ -4,6 +4,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import type {
   CreateUserInput,
+  ListUsersQuery,
+  ListUsersResult,
   UpdateUserInput,
   User,
   UsersRepository,
@@ -31,11 +33,11 @@ export class InMemoryUsersRepository implements UsersRepository {
       email: input.email.toLowerCase(),
       passwordHash: input.passwordHash,
       role: input.role,
-      status: 'pending_verify',
+      status: input.status ?? 'pending_verify',
       fullName: input.fullName,
       phone: input.phone ?? null,
       country: input.country,
-      emailVerifiedAt: null,
+      emailVerifiedAt: input.emailVerifiedAt ?? null,
       createdAt: now,
       updatedAt: now,
     };
@@ -55,5 +57,34 @@ export class InMemoryUsersRepository implements UsersRepository {
     };
     this.store.set(id, updated);
     return updated;
+  }
+
+  async list(query: ListUsersQuery): Promise<ListUsersResult> {
+    const limit = query.limit ?? 20;
+    const offset = query.offset ?? 0;
+    const q = query.q?.trim().toLowerCase();
+
+    const filtered = Array.from(this.store.values())
+      .filter((u) => (query.role ? u.role === query.role : true))
+      .filter((u) => (query.status ? u.status === query.status : true))
+      .filter((u) =>
+        q
+          ? u.email.toLowerCase().includes(q) ||
+            u.fullName.toLowerCase().includes(q)
+          : true,
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return {
+      items: filtered.slice(offset, offset + limit),
+      total: filtered.length,
+    };
+  }
+
+  async delete(id: string): Promise<void> {
+    if (!this.store.has(id)) {
+      throw new NotFoundException('User không tồn tại');
+    }
+    this.store.delete(id);
   }
 }

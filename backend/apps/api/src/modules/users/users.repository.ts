@@ -21,11 +21,30 @@ export interface CreateUserInput {
   fullName: string;
   phone?: string | null;
   country: string;
+  status?: UserStatus;
+  emailVerifiedAt?: Date | null;
 }
 
 export interface UpdateUserInput {
   status?: UserStatus;
   emailVerifiedAt?: Date | null;
+  role?: UserRole;
+  fullName?: string;
+  phone?: string | null;
+  country?: string;
+}
+
+export interface ListUsersQuery {
+  role?: UserRole;
+  status?: UserStatus;
+  q?: string; // search trên email + fullName (case-insensitive, substring)
+  limit?: number; // default 20, max 100
+  offset?: number; // default 0
+}
+
+export interface ListUsersResult {
+  items: User[];
+  total: number;
 }
 
 export interface UsersRepository {
@@ -33,4 +52,6 @@ export interface UsersRepository {
   findById(id: string): Promise<User | null>;
   insert(input: CreateUserInput): Promise<User>;
   update(id: string, patch: UpdateUserInput): Promise<User>;
+  list(query: ListUsersQuery): Promise<ListUsersResult>;
+  delete(id: string): Promise<void>; // hard delete
 }
