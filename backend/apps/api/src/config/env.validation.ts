@@ -11,6 +11,12 @@ export const envSchema = z.object({
   CORS_ORIGINS: z.string().default(''),
   VNPAY_TMN_CODE: z.string().optional(),
   VNPAY_HASH_SECRET: z.string().optional(),
+  SMTP_HOST: z.string().default('localhost'),
+  SMTP_PORT: z.coerce.number().int().positive().default(1025),
+  SMTP_FROM: z.string().email().default('noreply@tutor365.local'),
+  APP_URL: z.string().url().default('http://localhost:3000'),
+  BCRYPT_COST: z.coerce.number().int().min(4).max(15).default(12),
+  VERIFY_TOKEN_TTL_HOURS: z.coerce.number().int().positive().default(24),
 });
 
 export type Env = z.infer<typeof envSchema>;
