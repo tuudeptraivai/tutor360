@@ -1,13 +1,16 @@
-import { randomUUID } from 'node:crypto';
 import type { IncomingMessage } from 'node:http';
 
-import { Module } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ClsModule } from 'nestjs-cls';
 import { LoggerModule } from 'nestjs-pino';
 
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { ZodGlobalValidationPipe } from './common/pipes/zod-global-validation.pipe';
+import { resolveRequestId } from './common/utils/request-id';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
 import { NotificationsModule } from './notifications/notifications.module';
@@ -27,12 +30,6 @@ import { StudentsModule } from './modules/students/students.module';
 import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { UsersModule } from './modules/users/users.module';
-
-const resolveRequestId = (req: IncomingMessage): string => {
-  const header = req.headers['x-request-id'];
-  const fromHeader = Array.isArray(header) ? header[0] : header;
-  return fromHeader && fromHeader.length > 0 ? fromHeader : randomUUID();
-};
 
 @Module({
   imports: [
@@ -87,6 +84,18 @@ const resolveRequestId = (req: IncomingMessage): string => {
       provide: APP_PIPE,
       useClass: ZodGlobalValidationPipe,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(RequestIdMiddleware).forRoutes('*');
+  }
+}
