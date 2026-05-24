@@ -17,12 +17,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const res = ctx.getResponse();
     const req = ctx.getRequest();
     const requestId = ClsServiceManager.getClsService().getId() ?? req.id;
+    const path = req.url;
 
     if (exception instanceof ZodError) {
       res.status(400).json({
         ok: false,
         error: { code: 'VALIDATION_ERROR', details: exception.flatten() },
         requestId,
+        path,
       });
       return;
     }
@@ -32,6 +34,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ok: false,
         error: { code: 'HTTP_ERROR', message: exception.message },
         requestId,
+        path,
       });
       return;
     }
@@ -41,6 +44,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       ok: false,
       error: { code: 'INTERNAL' },
       requestId,
+      path,
     });
   }
 }
