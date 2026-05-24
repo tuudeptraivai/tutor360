@@ -1,7 +1,10 @@
 import { Global, Module } from '@nestjs/common';
 
-// Phase scaffold: chưa có Prisma schema / PrismaService.
-// Sẽ bổ sung PrismaService + schema ở issue Prisma (Section 5+).
+import { PrismaService } from './prisma.service';
+
 @Global()
-@Module({})
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
 export class PrismaModule {}
