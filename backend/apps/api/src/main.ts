@@ -47,9 +47,12 @@ async function bootstrap(): Promise<void> {
   if (process.env.NODE_ENV !== 'production') {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('Tutor365 API')
-      .setDescription('Tutor365 backend API documentation')
+      .setDescription(
+        'Tutor365 backend API documentation. Tất cả response bọc envelope `{ ok, data, requestId }`.',
+      )
       .setVersion('1.0')
-      .addBearerAuth()
+      .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'bearer')
+      .addServer('http://localhost:3000', 'local dev')
       .build();
     const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('api/docs', app, document);
