@@ -1,6 +1,7 @@
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { ApiOkEnvelope } from '../common/openapi';
 import { PrismaService } from '../prisma/prisma.service';
 
 @ApiTags('health')
@@ -9,6 +10,19 @@ export class HealthController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Liveness/readiness check (app + database)' })
+  @ApiOkEnvelope(
+    {
+      type: 'object',
+      required: ['status', 'db', 'ts'],
+      properties: {
+        status: { type: 'string', example: 'ok' },
+        db: { type: 'string', example: 'up' },
+        ts: { type: 'string', format: 'date-time' },
+      },
+    },
+    200,
+  )
   async check(): Promise<{ status: string; db: string; ts: string }> {
     let db = 'down';
     try {
