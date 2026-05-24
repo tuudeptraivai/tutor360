@@ -1,3 +1,6 @@
+import { randomUUID } from 'node:crypto';
+import type { IncomingMessage } from 'node:http';
+
 import { Module } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -25,17 +28,28 @@ import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { UsersModule } from './modules/users/users.module';
 
+const resolveRequestId = (req: IncomingMessage): string => {
+  const header = req.headers['x-request-id'];
+  const fromHeader = Array.isArray(header) ? header[0] : header;
+  return fromHeader && fromHeader.length > 0 ? fromHeader : randomUUID();
+};
+
 @Module({
   imports: [
     // Infrastructure
     ConfigModule,
     ClsModule.forRoot({
       global: true,
-      middleware: { mount: true },
+      middleware: {
+        mount: true,
+        generateId: true,
+        idGenerator: (req: IncomingMessage) => resolveRequestId(req),
+      },
     }),
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+        genReqId: (req) => resolveRequestId(req as IncomingMessage),
         transport:
           process.env.NODE_ENV === 'production'
             ? undefined
