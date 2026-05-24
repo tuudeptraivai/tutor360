@@ -9,3 +9,9 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// TODO: xoá khi issue Prisma schema thêm model domain thật.
+// Placeholder để `prisma generate` chạy được; PrismaService chỉ cần $connect + $queryRaw cho /health.
+model Placeholder {
+  id Int @id @default(autoincrement())
+}
