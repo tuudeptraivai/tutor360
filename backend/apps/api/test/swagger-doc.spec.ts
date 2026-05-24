@@ -108,12 +108,35 @@ describe('OpenAPI document (integration)', () => {
     expect(doc.paths['/health'].get.responses['200']).toBeDefined();
   });
 
-  it('POST /v1/auth/signup documents the body schema (V06 merged)', () => {
+  it('POST /v1/auth/signup documents the body schema without role (V20)', () => {
     const schema =
       doc.paths['/v1/auth/signup'].post.requestBody.content['application/json']
         .schema;
     expect(schema.required).toEqual(
+      expect.arrayContaining(['email', 'password', 'fullName']),
+    );
+    expect(schema.properties.role).toBeUndefined();
+  });
+
+  it('exposes the admin-users CRUD endpoints', () => {
+    expect(doc.paths['/v1/admin/users'].get).toBeDefined();
+    expect(doc.paths['/v1/admin/users'].post).toBeDefined();
+    expect(doc.paths['/v1/admin/users/{id}'].get).toBeDefined();
+    expect(doc.paths['/v1/admin/users/{id}'].patch).toBeDefined();
+    expect(doc.paths['/v1/admin/users/{id}'].delete).toBeDefined();
+  });
+
+  it('admin-users create body documents role + password but never passwordHash', () => {
+    const schema =
+      doc.paths['/v1/admin/users'].post.requestBody.content['application/json']
+        .schema;
+    expect(schema.required).toEqual(
       expect.arrayContaining(['email', 'password', 'fullName', 'role']),
     );
+    const ok =
+      doc.paths['/v1/admin/users'].post.responses['201'].content[
+        'application/json'
+      ].schema;
+    expect(JSON.stringify(ok)).not.toContain('passwordHash');
   });
 });

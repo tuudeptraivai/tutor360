@@ -17,6 +17,8 @@ export const envSchema = z.object({
   APP_URL: z.string().url().default('http://localhost:3000'),
   BCRYPT_COST: z.coerce.number().int().min(4).max(15).default(12),
   VERIFY_TOKEN_TTL_HOURS: z.coerce.number().int().positive().default(24),
+  // BOOTSTRAP only — temporary admin auth until V07 JwtAuthGuard + V09 RolesGuard.
+  ADMIN_BOOTSTRAP_TOKEN: z.string().min(32).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
