@@ -171,6 +171,38 @@ Sau khi server chạy:
 
 ---
 
+## Database setup (Prisma)
+
+Schema: [`backend/apps/api/prisma/schema.prisma`](./backend/apps/api/prisma/schema.prisma) — models `User`, `EmailVerifyToken`, `Course` + enums `UserRole`, `UserStatus`, `CourseStatus`.
+
+Trước khi chạy server / test lần đầu, đảm bảo PostgreSQL đang chạy ở port `5432` và `DATABASE_URL` trong `apps/api/.env` trỏ đúng DB. Sau đó sync schema vào DB:
+
+### macOS / Windows (cùng lệnh, chạy ở `backend/`)
+
+```bash
+# Sync schema vào DB (dev — không cần migration file)
+pnpm --filter api exec prisma db push
+
+# Generate Prisma Client (chạy tự động sau db push, gọi lại khi cần)
+pnpm --filter api exec prisma generate
+```
+
+Kiểm tra nhanh:
+
+```bash
+# macOS
+psql "$DATABASE_URL" -c '\dt'
+
+# Windows (PowerShell)
+psql $env:DATABASE_URL -c '\dt'
+```
+
+Phải thấy 3 bảng: `User`, `EmailVerifyToken`, `Course`.
+
+> Khi schema thay đổi, chạy lại `prisma db push`. Khi sẵn sàng quản lý migration (V08+), chuyển sang `prisma migrate dev --name <change>`.
+
+---
+
 ## Quy tắc làm việc
 
 Mọi đóng góp (bao gồm AI agents) **bắt buộc đọc** [`AGENTS.md`](./AGENTS.md) trước khi bắt đầu công việc. File này định nghĩa:
