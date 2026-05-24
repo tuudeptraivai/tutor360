@@ -2,12 +2,17 @@ import type { ZodSchema, ZodTypeAny } from 'zod';
 import { ZodObject } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 
+type ZodToJsonSchemaFn = (
+  schema: unknown,
+  options: { target: 'openApi3'; $refStrategy: 'none' },
+) => Record<string, unknown>;
+
 /** Convert Zod schema → OpenAPI 3 schema object (inline, no $ref). */
 export function zodToOpenApi(schema: ZodSchema): Record<string, unknown> {
-  return zodToJsonSchema(schema, {
+  return (zodToJsonSchema as unknown as ZodToJsonSchemaFn)(schema, {
     target: 'openApi3',
     $refStrategy: 'none',
-  }) as Record<string, unknown>;
+  });
 }
 
 /** Extract top-level fields from a ZodObject (for @ApiQuery / @ApiParam per-field). */
