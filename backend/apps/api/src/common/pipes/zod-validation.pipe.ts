@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { ZodSchema } from 'zod';
 
+import { formatZodIssues } from './format-zod-error';
+
 /**
  * Per-route Zod validation pipe.
  *
@@ -18,7 +20,10 @@ export class ZodValidationPipe implements PipeTransform {
   transform(value: unknown, _metadata: ArgumentMetadata): unknown {
     const result = this.schema.safeParse(value);
     if (!result.success) {
-      throw new BadRequestException(result.error.flatten());
+      throw new BadRequestException({
+        code: 'VALIDATION_ERROR',
+        details: formatZodIssues(result.error),
+      });
     }
     return result.data;
   }

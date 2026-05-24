@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { ZodSchema } from 'zod';
 
+import { formatZodIssues } from './format-zod-error';
+
 interface ZodAwareType {
   zodSchema?: ZodSchema;
 }
@@ -27,7 +29,10 @@ export class ZodGlobalValidationPipe implements PipeTransform {
     }
     const result = schema.safeParse(value);
     if (!result.success) {
-      throw new BadRequestException(result.error.flatten());
+      throw new BadRequestException({
+        code: 'VALIDATION_ERROR',
+        details: formatZodIssues(result.error),
+      });
     }
     return result.data;
   }
