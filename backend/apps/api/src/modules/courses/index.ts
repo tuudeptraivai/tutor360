@@ -7,4 +7,4 @@ export type {
   CreateCourseInput,
 } from './courses.repository';
 export { CreateCourseDto } from './dto/create-course.dto';
-// KHÔNG export InMemoryCourseRepository (slide 10 — không leak impl)
+// Internal repo impl is intentionally NOT re-exported (slide 10 — no impl leak).
